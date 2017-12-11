@@ -3,9 +3,11 @@ const path = require('path');
 const axios = require('axios');
 
 const app = express();
+const port = 80;
+
 const router = express.Router();
 
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(__dirname + '/dist'));
 app.use('/api', router);
 
 router.get('/getRecommendSongList', (req, res) => {
@@ -40,7 +42,7 @@ router.get('/getSongList', (req, res) => {
   });
 });
 
-router.get('/getLyric', function (req, res) {
+router.get('/getLyric', function(req, res) {
   let url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg';
 
   axios.get(url, {
@@ -55,15 +57,15 @@ router.get('/getLyric', function (req, res) {
       let reg = /^\w+\(({[^()]+})\)$/;
       let matches = ret.match(reg);
       if (matches) {
-        ret = JSON.parse(matches[1])
+        ret = JSON.parse(matches[1]);
       }
     }
-    res.json(ret)
+    res.json(ret);
   }).catch((e) => {
-    console.log(e)
-  })
+    console.log(e);
+  });
 });
 
-app.listen(3000, function() {
-  console.log('App listening on port 3000!\n');
+app.listen(port, () => {
+  console.log(`App listening on port ${port}!\n`);
 });

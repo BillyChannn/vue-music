@@ -1,6 +1,10 @@
 <template>
   <div class="recommend" ref="recommend">
-    <v-scroll class="recommend-content" ref="scroll" :data="recommendSongList">
+    <v-scroll class="recommend-content"
+              ref="scroll"
+              :data="recommendSongList"
+              :pullUpLoad="pullUpLoad"
+              @pullingUp="searchMore">
       <v-slider v-if="recommendSlider.length">
         <a v-for="item in recommendSlider" :href="item.linkUrl">
           <img @load="loadImage" :src="item.picUrl" :alt="item.id">
@@ -43,8 +47,21 @@
     data() {
       return {
         recommendSlider: [],
-        recommendSongList: []
+        recommendSongList: [],
+        page: 0,
+        hasMore: true
       };
+    },
+    computed: {
+      pullUpLoad() {
+        return {
+          threshold: -50,
+          moreTxt: '上拉加载',
+          noMoreTxt: '没有更多数据了',
+          hasMore: this.hasMore,
+          empty: !this.recommendSongList.length
+        }
+      }
     },
     created() {
       this._getRecommendSlider();
@@ -54,6 +71,12 @@
       ...mapMutations({
         setSongListId: 'SET_SONG_LIST_ID'
       }),
+      searchMore() {
+        if (this.hasMore) {
+          this.page++;
+          this._getRecommendSongList();
+        }
+      },
       handlePlaylist(list) {
         this.$refs.recommend.style.bottom = list.length ? '60px' : '';
         this.$refs.scroll.refresh();
@@ -70,9 +93,10 @@
         });
       },
       _getRecommendSongList() {
-        getRecommendSongList().then(res => {
+        getRecommendSongList(this.page).then(res => {
           if (res.code === ERR_OK) {
-            this.recommendSongList = res.data.list;
+            this.recommendSongList = this.recommendSongList.concat(res.data.list);
+            this.hasMore = this.recommendSongList.length < res.data.sum;
           }
         });
       },

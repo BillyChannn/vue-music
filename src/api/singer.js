@@ -29,19 +29,19 @@ export function getSingerList() {
   return jsonp(url, data, options);
 }
 
-export function getSingerDetail(singerId) {
+export function getSingerDetail(singerId, page, perPage = 30) {
   const url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg';
 
   const data = Object.assign({}, commonParams, {
+    singermid: singerId,
+    num: perPage,
+    begin: page * perPage,
     loginUin: 0,
     hostUin: 0,
     format: 'jsonp',
     platform: 'yqq',
     needNewCode: 0,
-    singermid: singerId,
     order: 'listen',
-    begin: 0,
-    num: 30,
     songstatus: 1
   });
 

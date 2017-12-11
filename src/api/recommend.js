@@ -15,10 +15,11 @@ export function getRecommendSlider() {
   return jsonp(url, data, options);
 }
 
-export function getRecommendSongList() {
+export function getRecommendSongList(page) {
   const url = '/api/getRecommendSongList';
 
   const data = Object.assign({}, commonParams, {
+    sin: page,
     picmid: 1,
     loginUin: 0,
     hostUin: 0,
@@ -27,7 +28,6 @@ export function getRecommendSongList() {
     needNewCode: 0,
     categoryId: 10000000,
     sortId: 5,
-    sin: 0,
     ein: 29
   });
 

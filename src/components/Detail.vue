@@ -8,22 +8,23 @@
       </div>
       <div class="filter" ref="filter"></div>
     </div>
-    <v-scroll
-      class="scroll-wrapper"
-      :data="songList"
-      :probeType="3"
-      :listenScroll="true"
-      ref="scroll"
-      @scroll="onScroll">
+    <v-scroll class="scroll-wrapper"
+              :data="songList"
+              :probeType="3"
+              :listenScroll="true"
+              ref="scroll"
+              :pullUpLoad="pullUpLoad"
+              @pullingUp="onPullingUp"
+              @scroll="onScroll">
       <v-song-list
         class="song-list"
         ref="songList"
         :songList="songList"
         :isRank="isRank"
         @select="selectItem"></v-song-list>
-      <v-loading class="loading" v-show="!songList.length"></v-loading>
       <div class="list-background" ref="listBackground"></div>
     </v-scroll>
+    <v-loading class="loading" v-show="!songList.length"></v-loading>
   </div>
 </template>
 
@@ -61,12 +62,16 @@
       isRank: {
         type: Boolean,
         default: false
+      },
+      pullUpLoad: {
+        type: Object,
+        default: null
       }
     },
     data() {
       return {
         playText: '随机播放全部'
-      }
+      };
     },
     computed: {
       headerBgImgStyle() {
@@ -78,6 +83,9 @@
         'selectPlay',
         'randomPlay'
       ]),
+      onPullingUp() {
+        this.$emit('pullingUp');
+      },
       goBack() {
         this.$router.go(-1);
       },
@@ -128,8 +136,8 @@
         if (y < 0) {
           header.style.transform = `scale(1)`;
           header.style.filter = `blur(${blur})`;
-          header.style.zIndex = '0';
-          scroll.style.zIndex = '1';
+          header.style.zIndex = '10';
+          scroll.style.zIndex = '20';
           bg.style.zIndex = '1';
           if (dis >= TITLE_HEIGHT) {
             // bg.style.top = y + 'px';
@@ -137,13 +145,13 @@
             bg.style.height = scroll.clientHeight + dis - TITLE_HEIGHT + 'px';
             // bg.style.top = -y - headerHeight + TITLE_HEIGHT + 'px';
             header.style.height = TITLE_HEIGHT + 'px';
-            header.style.zIndex = '2';
+            header.style.zIndex = '30';
           }
         } else {
           bg.style.zIndex = '-1';
           header.style.transform = `scale(${scale})`;
           header.style.filter = null;
-          header.style.zIndex = '2';
+          header.style.zIndex = '30';
         }
       },
       selectItem(song, index) {
@@ -268,13 +276,16 @@
         background: $color-background;
         overflow: hidden;
       }
+    }
 
-      .loading {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 100%;
-      }
+    .loading {
+      position: absolute;
+      top: 40%;
+      bottom: 0;
+      padding-top: 30%;
+      width: 100%;
+      z-index: 10000;
+      background: $color-background;
     }
   }
 

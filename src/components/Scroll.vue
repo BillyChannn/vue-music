@@ -57,13 +57,19 @@
     },
     data() {
       return {
-        isPullUpLoad: false,
-        pullUpTxt: ''
+        isPullUpLoad: false
       };
     },
     computed: {
       contentHeight() {
         return this.$refs.scrollContent.clientHeight;
+      },
+      pullUpTxt() {
+        if (this.pullUpLoad) {
+          const moreTxt = this.pullUpLoad && this.pullUpLoad.moreTxt ? this.pullUpLoad.moreTxt : '';
+          const noMoreTxt = this.pullUpLoad && this.pullUpLoad.noMoreTxt ? this.pullUpLoad.noMoreTxt : '';
+          return this.pullUpLoad.hasMore ? moreTxt : noMoreTxt;
+        }
       }
     },
     watch: {
@@ -118,7 +124,6 @@
         if (this.scroll && this.pullUpLoad && this.isPullUpLoad) {
           this.scroll.finishPullUp();
           this.isPullUpLoad = false;
-          this._refreshPullUpTxt();
         }
       },
       scrollTo() {
@@ -126,11 +131,6 @@
       },
       scrollToElement() {
         this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments);
-      },
-      _refreshPullUpTxt() {
-        const moreTxt = this.pullUpLoad && this.pullUpLoad.moreTxt ? this.pullUpLoad.moreTxt : '';
-        const noMoreTxt = this.pullUpLoad && this.pullUpLoad.noMoreTxt ? this.pullUpLoad.noMoreTxt : '';
-        this.pullUpTxt = this.pullUpLoad.hasMore ? moreTxt : noMoreTxt;
       }
     },
     components: {

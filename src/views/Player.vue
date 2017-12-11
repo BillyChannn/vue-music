@@ -15,14 +15,13 @@
           <div class="subtitle" v-html="currentSong.singer"></div>
         </div>
 
-        <div
-          class="middle"
-          @touchstart.prevent="middleTouchStart"
-          @touchmove.prevent="middleTouchMove"
-          @touchend="middleTouchEnd">
+        <div class="middle"
+             @touchstart.prevent="middleTouchStart"
+             @touchmove.prevent="middleTouchMove"
+             @touchend="middleTouchEnd">
           <div class="middle-l" ref="middleL">
             <div class="cd-wrapper" ref="cdWrapper">
-              <div class="cd play" :class="{pause: !isPlaying}">
+              <div class="cd play" :class="{pause: !isPlaying || !canPlay}">
                 <img :src="currentSong.albumPic">
               </div>
             </div>
@@ -106,9 +105,8 @@
       @timeupdate="onTimeUpdate"
       @loadstart="canPlay = false"
       @canplay="canPlay = true"
-      @waiting="canPlay = false"
       @error="canPlay = false"
-      @playing="canplay = true"
+      @play="canplay = true"
       @ended="end"></audio>
   </div>
 </template>
@@ -165,32 +163,49 @@
     },
     watch: {
       canPlay(newVal) {
-        if (newVal && this.isPlaying) {
-          if (this.playlist.length > 0) {
-            this.getLyric();
-            this.$refs.audio.play();
-            this.savePlayHistory(this.currentSong);
-          } else {
-            this.$refs.audio.pause();
+        this.$nextTick(() => {
+          const audio = this.$refs.audio;
+
+          if (newVal === false || !this.isPlaying) {
+            return null;
           }
+
+          if (this.playList && this.playList.length <= 0) {
+            audio.pause();
+            return null;
+          }
+
+          if (this.currentLyric) {
+            this.currentLyric.stop();
+            this.currentTime = 0;
+            this.playingLyric = '';
+            this.currentLineNum = 0;
+            this.currentLyric = null;
+          }
+
+          clearTimeout(this.timer);
+          this.timer = setTimeout(() => {
+            this.getLyric();
+            audio.play();
+            this.savePlayHistory(this.currentSong);
+          }, 300);
+        });
+      },
+      isPlaying(newVal) {
+        const audio = this.$refs.audio;
+        if (this.canPlay) {
+          newVal ? audio.play() : audio.pause();
         }
       },
-      isPlaying() {
-        if (this.isPlaying) {
-          this.canPlay ? this.$refs.audio.play() : null;
-        } else {
-          this.$refs.audio.pause();
-        }
-        this.currentLyric ? this.currentLyric.togglePlay() : null;
-      }
     },
     created() {
       this.touch = {};
+      this.timer = null;
     },
     methods: {
       ...mapMutations({
         setFullScreen: 'SET_FULL_SCREEN',
-        setPlayingState: 'SET_PLAYING_STATE',
+        setPlayingState: 'SET_PLAYING_STATE'
       }),
       ...mapActions([
         'savePlayHistory'
@@ -253,6 +268,7 @@
         if (this.canPlay) {
           this.setPlayingState(!this.isPlaying);
         }
+        this.currentLyric ? this.currentLyric.togglePlay() : null;
       },
       changeSong(offset = 1) {
         let index = this.currentIndex;
@@ -303,9 +319,9 @@
         return min + ':' + sec;
       },
       getLyric() {
-        this.currentLyric ? this.currentLyric.seek(0) : null;
+        // this.currentLyric ? this.currentLyric.seek(0) : null;
         this.currentSong.getLyric().then(lyric => {
-          this.currentLyric ? this.currentLyric.stop() : null;
+          // this.currentLyric ? this.currentLyric.stop() : null;
           this.currentLyric = new Lyric(lyric, this.handleLyric);
           this.isPlaying ? this.currentLyric.play() : null;
         }).catch(() => {
