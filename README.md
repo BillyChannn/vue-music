@@ -10,7 +10,7 @@
 
 [项目演示地址](http://39.108.96.190)
 
-![alt](http://github.com/billychannn/vue-music/static/QRcode)
+![QRcode](http://github.com/billychannn/vue-music/raw/master/static/QRcode)
 
 ```
 git clone https://github.com/billychannn/vue-music
@@ -54,21 +54,21 @@ node server.js
 
 # 界面截图展示
 ### 推荐页面
-![推荐页面](http://github.com/billychannn/vue-music/static/recommend.gif)
+![推荐页面](http://github.com/billychannn/vue-music/raw/master/static/recommend.gif)
 
 ### 歌手列表
-![歌手列表](http://github.com/billychannn/vue-music/static/singerList.gif)
+![歌手列表](http://github.com/billychannn/vue-music/raw/master/static/singerList.gif)
 
 ### 排行列表
-![歌手列表](http://github.com/billychannn/vue-music/static/topList.gif)
+![歌手列表](http://github.com/billychannn/vue-music/raw/master/static/topList.gif)
 
 ### 搜索页面
-![搜索页面](http://github.com/billychannn/vue-music/static/search.gif)
+![搜索页面](http://github.com/billychannn/vue-music/raw/master/static/search.gif)
 
 ### 播放器内核
-![播放器内核1](http://github.com/billychannn/vue-music/static/player1.gif)
-![播放器内核2](http://github.com/billychannn/vue-music/static/player2.gif)
-![播放器内核3](http://github.com/billychannn/vue-music/static/player3.gif)
+![播放器内核1](http://github.com/billychannn/vue-music/raw/master/static/player1.gif)
+![播放器内核2](http://github.com/billychannn/vue-music/raw/master/static/player2.gif)
+![播放器内核3](http://github.com/billychannn/vue-music/raw/master/static/player3.gif)
 
 # 项目结构
 > 待项目重构后更新
