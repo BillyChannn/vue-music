@@ -9,7 +9,6 @@
 > PC端请使用浏览器开发工具手机模式浏览
 
 [项目演示地址](http://39.108.96.190)
-
 <img src="http://github.com/billychannn/vue-music/blob/master/static/screenshots/QRcode.png" alt="QRcode"></img>
 
 ```
