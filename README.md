@@ -10,7 +10,7 @@
 
 [项目演示地址](http://39.108.96.190)
 
-![QRcode](http://github.com/billychannn/vue-music/blob/master/static/screenshots/QRcode)
+<img src="http://github.com/billychannn/vue-music/blob/master/static/screenshots/QRcode.png" alt="QRcode"></img>
 
 ```
 git clone https://github.com/billychannn/vue-music
