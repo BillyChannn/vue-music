@@ -6,11 +6,14 @@
 
 # 项目介绍
 ### 项目展示与运行
+#### 展示
 > PC端请使用浏览器开发工具手机模式浏览
 
 [项目演示地址](http://39.108.96.190)
-<img src="http://github.com/billychannn/vue-music/blob/master/static/screenshots/QRcode.png" alt="QRcode"></img>
 
+<img src="https://github.com/BillyChannn/vue-music/blob/master/static/screenshots/QRcode.png?raw=true" alt="QRcode"></img>
+
+#### 运行
 ```
 git clone https://github.com/billychannn/vue-music
 cd vue-music
@@ -53,21 +56,19 @@ node server.js
 
 # 界面截图展示
 ### 推荐页面
-![推荐页面](http://github.com/billychannn/vue-music/blob/master/static/screenshots/recommend.gif)
+<img src="https://github.com/billychannn/vue-music/blob/master/static/screenshots/recommend.gif?raw=true" alt="recommend" width="375" height="667"></img>
 
 ### 歌手列表
-![歌手列表](http://github.com/billychannn/vue-music/blob/master/static/screenshots/singerList.gif)
+<img src="https://github.com/billychannn/vue-music/blob/master/static/screenshots/singerList.gif?raw=true" alt="singerList" width="375" height="667"></img>
 
 ### 排行列表
-![歌手列表](http://github.com/billychannn/vue-music/blob/master/static/screenshots/topList.gif)
-
+<img src="https://github.com/billychannn/vue-music/blob/master/static/screenshots/topList.gif?raw=true" alt="topList" width="375" height="667"></img>
 ### 搜索页面
-![搜索页面](http://github.com/billychannn/vue-music/blob/master/static/screenshots/search.gif)
-
+<img src="https://github.com/billychannn/vue-music/blob/master/static/screenshots/search.gif?raw=true" alt="search" width="375" height="667"></img>
 ### 播放器内核
-![播放器内核1](http://github.com/billychannn/vue-music/blob/master/static/screenshots/player1.gif)
-![播放器内核2](http://github.com/billychannn/vue-music/blob/master/static/screenshots/player2.gif)
-![播放器内核3](http://github.com/billychannn/vue-music/blob/master/static/screenshots/player3.gif)
+<img src="https://github.com/billychannn/vue-music/blob/master/static/screenshots/player1.gif?raw=true" alt="player1" width="375" height="667"></img>
+<img src="https://github.com/billychannn/vue-music/blob/master/static/screenshots/player2.gif?raw=true" alt="player2" width="375" height="667"></img>
+<img src="https://github.com/billychannn/vue-music/blob/master/static/screenshots/player3.gif?raw=true" alt="player3" width="375" height="667"></img>
 
 # 项目结构
 > 待项目重构后更新
