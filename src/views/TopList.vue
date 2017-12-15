@@ -10,12 +10,14 @@
         </ul>
       </li>
     </v-scroll>
+    <v-loading class="loading" v-show="!topLists.length"></v-loading>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
   import Scroll from '../components/Scroll';
+  import Loading from '../components/Loading';
   import {playlistMixin} from "../api/mixin";
   import {getTopLists} from '../api/topList';
   import {ERR_OK} from '../api/config';
@@ -24,7 +26,8 @@
   export default {
     mixins: [playlistMixin],
     components: {
-      'v-scroll': Scroll
+      'v-scroll': Scroll,
+      'v-loading': Loading
     },
     data() {
       return {
@@ -101,6 +104,13 @@
           @include no-wrap();
         }
       }
+    }
+
+    .loading {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
     }
   }
 

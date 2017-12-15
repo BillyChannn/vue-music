@@ -59,16 +59,16 @@
           </div>
           <div class="operators">
             <div class="icon icon-left">
-              <span :class="modeIcon" @click="changeMode"></span>
+              <span :class="modeIcon" @touchend="changeMode"></span>
             </div>
             <div class="icon icon-left">
-              <span class="icon-prev" @click="changeSong(-1)"></span>
+              <span class="icon-prev" @touchend="changeSong(-1)"></span>
             </div>
             <div class="icon icon-center" :class="{disable: !canPlay}">
-              <span :class="playIcon" @click="togglePlaying"></span>
+              <span :class="playIcon" @touchend="togglePlaying"></span>
             </div>
             <div class="icon icon-right">
-              <span class="icon-next" @click="changeSong()"></span>
+              <span class="icon-next" @touchend="changeSong()"></span>
             </div>
             <div class="icon icon-right">
               <span :class="favoriteIcon(currentSong)" @click="toggleFavorite()"></span>
@@ -82,13 +82,13 @@
       <div class="mini-player" v-show="!isFullScreen && playlist.length" @click="maximize">
         <div class="mini-progress-bar" :style="{width: miniProgressWidth}"></div>
         <div class="icon">
-          <img width="40" height="40" :src="currentSong.albumPic" class="play" :class="{pause: !isPlaying}">
+          <img width="40" height="40" :src="currentSong.albumPic" class="play" :class="{pause: !isPlaying || !canPlay}">
         </div>
         <div class="text">
           <h2 class="name" v-html="currentSong.name"></h2>
           <p class="desc" v-html="currentSong.singer"></p>
         </div>
-        <div class="control">
+        <div class="control" :class="{disable: !canPlay}">
           <span :class="playIconMini" @click.stop="togglePlaying"></span>
         </div>
         <div class="control">
@@ -103,10 +103,8 @@
       ref="audio"
       :src="currentSong.url"
       @timeupdate="onTimeUpdate"
-      @loadstart="canPlay = false"
-      @canplay="canPlay = true"
       @error="canPlay = false"
-      @play="canplay = true"
+      @canplay="canPlay = true"
       @ended="end"></audio>
   </div>
 </template>
@@ -162,45 +160,35 @@
       }
     },
     watch: {
-      canPlay(newVal) {
-        this.$nextTick(() => {
-          const audio = this.$refs.audio;
+      currentSong(newSong, oldSong) {
+        const audio = this.$refs.audio;
 
-          if (newVal === false || !this.isPlaying) {
-            return null;
-          }
+        if (!newSong.id || newSong.id === oldSong.id) return;
 
-          if (this.playList && this.playList.length <= 0) {
-            audio.pause();
-            return null;
-          }
+        if (this.currentLyric) this.clearLyric();
 
-          if (this.currentLyric) {
-            this.currentLyric.stop();
-            this.currentTime = 0;
-            this.playingLyric = '';
-            this.currentLineNum = 0;
-            this.currentLyric = null;
-          }
+        this.currentTime = 0;
+        this.canPlay = false;
 
-          clearTimeout(this.timer);
-          this.timer = setTimeout(() => {
-            this.getLyric();
-            audio.play();
-            this.savePlayHistory(this.currentSong);
-          }, 300);
-        });
+        this.timers.forEach(item => clearTimeout(item));
+        this.timers = [];
+
+        this.timers.push(setTimeout(() => {
+          audio.play();
+          this.getLyric();
+          this.savePlayHistory(this.currentSong);
+        }, 500));
       },
       isPlaying(newVal) {
         const audio = this.$refs.audio;
         if (this.canPlay) {
           newVal ? audio.play() : audio.pause();
         }
-      },
+      }
     },
     created() {
       this.touch = {};
-      this.timer = null;
+      this.timers = [];
     },
     methods: {
       ...mapMutations({
@@ -210,6 +198,9 @@
       ...mapActions([
         'savePlayHistory'
       ]),
+      initialAudio() {
+        this.$refs.audio.play();
+      },
       showPlaylist() {
         this.$refs.playlist.toggleDisplay();
       },
@@ -267,17 +258,14 @@
       togglePlaying() {
         if (this.canPlay) {
           this.setPlayingState(!this.isPlaying);
+          this.currentLyric ? this.currentLyric.togglePlay() : null;
         }
-        this.currentLyric ? this.currentLyric.togglePlay() : null;
       },
       changeSong(offset = 1) {
         let index = this.currentIndex;
         const len = this.playlist.length;
 
         if (len === 1) {
-          if (offset < 0) {
-            this.$refs.audio.currentTime = 0;
-          }
           return null;
         }
 
@@ -290,7 +278,6 @@
         }
 
         this.setCurrentIndex(index);
-
         if (!this.isPlaying) {
           this.togglePlaying();
         }
@@ -307,10 +294,9 @@
       onPercentChanged(percent) {
         const time = this.currentSong.duration * percent;
         this.$refs.audio.currentTime = time;
-        this.currentLyric.seek(time * 1000);
-        if (!this.isPlaying) {
-          this.togglePlaying();
-        }
+        this.currentLyric ? this.currentLyric.seek(time * 1000) : null;
+        if (!this.isPlaying) this.togglePlaying();
+
       },
       formatTime(time) {
         time = Math.floor(time);
@@ -319,16 +305,16 @@
         return min + ':' + sec;
       },
       getLyric() {
-        // this.currentLyric ? this.currentLyric.seek(0) : null;
         this.currentSong.getLyric().then(lyric => {
-          // this.currentLyric ? this.currentLyric.stop() : null;
           this.currentLyric = new Lyric(lyric, this.handleLyric);
           this.isPlaying ? this.currentLyric.play() : null;
-        }).catch(() => {
-          this.currentLyric = null;
-          this.playingLyric = '';
-          this.currentLineNum = 0;
-        });
+        }).catch(() => this.clearLyric());
+      },
+      clearLyric() {
+        this.currentLyric.stop();
+        this.currentLineNum = 0;
+        this.currentLyric = null;
+        this.playingLyric = '';
       },
       handleLyric({lineNum, txt}) {
         this.currentLineNum = lineNum;
@@ -341,15 +327,12 @@
         this.playingLyric = txt;
       },
       middleTouchStart(e) {
-        // TODO: 搞清楚 initiated 这个标志位有没有必要添加；
-        // this.touch.initiated = true;
         this.touch.startX = e.touches[0].pageX;
         this.touch.startY = e.touches[0].pageY;
         this.$refs.lyricList.$el.style.transition = null;
         this.$refs.middleL.style.transition = null;
       },
       middleTouchMove(e) {
-        // if (this.touch.initiated) {
         const deltaX = e.touches[0].pageX - this.touch.startX;
         const deltaY = e.touches[0].pageY - this.touch.startY;
         const ww = window.innerWidth;
@@ -359,7 +342,6 @@
           this.$refs.middleL.style.opacity = 1 - Math.abs(offsetX / ww);
           this.$refs.lyricList.$el.style.transform = `translateX(${offsetX}px)`;
         }
-        // }
       },
       middleTouchEnd() {
         let offsetX;
@@ -722,6 +704,10 @@
         flex: 0 0 30px;
         width: 30px;
         padding: 0 10px;
+
+        &.disable {
+          color: $color-theme-d;
+        }
 
         .icon-play-mini, .icon-pause-mini, .icon-playlist {
           font-size: 30px;

@@ -61,9 +61,6 @@
       };
     },
     computed: {
-      contentHeight() {
-        return this.$refs.scrollContent.clientHeight;
-      },
       pullUpTxt() {
         if (this.pullUpLoad) {
           const moreTxt = this.pullUpLoad && this.pullUpLoad.moreTxt ? this.pullUpLoad.moreTxt : '';
@@ -78,10 +75,7 @@
       }
     },
     mounted() {
-      this.$nextTick(() => {
-        this.initScroll();
-      });
-
+      this.$nextTick(() => this.initScroll());
     },
     methods: {
       initScroll() {
@@ -148,5 +142,10 @@
     text-align: center;
     font-size: $font-size-medium;
     color: $color-text-l;
+
+    .after-trigger {
+      position: relative;
+      z-index: 100;
+    }
   }
 </style>

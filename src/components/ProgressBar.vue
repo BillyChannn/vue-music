@@ -48,7 +48,6 @@
           const deltaX = e.touches[0].pageX - this.touch.startX;
           const offsetX = Math.min(barWidth, Math.max(0, this.touch.left + deltaX));
           this._offset(offsetX);
-          this._emit('percentChanging');
         }
       },
       progressTouchEnd(e) {

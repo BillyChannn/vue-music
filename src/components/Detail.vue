@@ -3,7 +3,7 @@
     <span class="icon-back" @click="goBack"></span>
     <h1 class="title" v-html="title"></h1>
     <div class="header" :style="headerBgImgStyle" ref="header">
-      <div class="play-wrapper">
+      <div class="play-wrapper" ref="playWrapper">
         <v-play-button v-show="songList.length" :text="playText" @click="randomPlay(songList)"></v-play-button>
       </div>
       <div class="filter" ref="filter"></div>
@@ -89,63 +89,30 @@
       goBack() {
         this.$router.go(-1);
       },
-      // onScroll({y}) {
-      //   const headerHeight = window.innerHeight * 0.4;
-      //   let header = this.$refs.header;
-      //   let scroll = this.$refs.scroll.$el;
-      //   let dis = headerHeight + y;
-      //   let blur = Math.min(-y * 0.05, 10) + 'px';
-      //   // x=headerHeight  y=滚动的量  s=scale的数值
-      //   // x * s - x = y ==> x(s - 1) = y ==> s = y/x + 1
-      //   let scale = y / headerHeight + 1;
-      //
-      //   if (y < 0) {
-      //     header.style.transform = `scale(1)`;
-      //     header.style.filter = `blur(${blur})`;
-      //     header.style.zIndex = '0';
-      //     scroll.style.zIndex = '1';
-      //     if (dis >= TITLE_HEIGHT) {
-      //       scroll.style.top = headerHeight + y + 'px';
-      //       scroll.style.paddingTop = -y + 'px';
-      //     } else {
-      //       scroll.style.top = TITLE_HEIGHT + 'px';
-      //       scroll.style.paddingTop = 0;
-      //       scroll.style.overflow = 'hidden';
-      //     }
-      //   } else {
-      //     scroll.style.zIndex = '0';
-      //     scroll.style.top = headerHeight + 'px';
-      //     scroll.style.paddingTop = '0';
-      //     header.style.zIndex = '1';
-      //     header.style.transform = `scale(${scale})`;
-      //     header.style.filter = null;
-      //   }
-      // },
       onScroll({y}) {
         const headerHeight = window.innerHeight * 0.4;
         let header = this.$refs.header;
         let bg = this.$refs.listBackground;
         let scroll = this.$refs.scroll.$el;
         let dis = headerHeight + y;
-        let blur = Math.min(-y * 0.05, 10) + 'px';
+        let blur = Math.min(-y * 0.05, 5) + 'px';
         // x=headerHeight  y=滚动的量  s=scale的数值
         // x * s - x = y ==> x(s - 1) = y ==> s = y/x + 1
         let scale = y / headerHeight + 1;
 
         header.style.height = '40%';
+        this.$refs.playWrapper.style.display = '';
         if (y < 0) {
           header.style.transform = `scale(1)`;
           header.style.filter = `blur(${blur})`;
           header.style.zIndex = '10';
           scroll.style.zIndex = '20';
           bg.style.zIndex = '1';
-          if (dis >= TITLE_HEIGHT) {
-            // bg.style.top = y + 'px';
-          } else {
+          if (dis < TITLE_HEIGHT) {
             bg.style.height = scroll.clientHeight + dis - TITLE_HEIGHT + 'px';
-            // bg.style.top = -y - headerHeight + TITLE_HEIGHT + 'px';
             header.style.height = TITLE_HEIGHT + 'px';
             header.style.zIndex = '30';
+            this.$refs.playWrapper.style.display = 'none';
           }
         } else {
           bg.style.zIndex = '-1';

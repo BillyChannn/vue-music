@@ -1,15 +1,16 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Recommend from '../views/Recommend';
-import Singer from '../views/Singer';
-import SingerDetail from '../views/SingerDetail';
-import TopList from '../views/TopList';
-import Search from '../views/Search';
-import TopListDetail from '../views/TopListDetail';
-import SongListDetail from '../views/SongListDetail';
-import User from '../views/User';
 
 Vue.use(Router);
+
+const Recommend = () => import('../views/Recommend');
+const Singer = () => import('../views/Singer');
+const TopList = () => import('../views/TopList');
+const Search = () => import('../views/Search');
+const SingerDetail = () => import('../views/SingerDetail');
+const TopListDetail = () => import('../views/TopListDetail');
+const SongListDetail = () => import('../views/SongListDetail');
+const User = () => import('../views/User');
 
 export default new Router({
   routes: [
@@ -60,7 +61,6 @@ export default new Router({
     {
       path: '/User',
       component: User
-    },
-
+    }
   ]
 });

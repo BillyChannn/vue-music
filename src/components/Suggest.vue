@@ -17,7 +17,7 @@
         </div>
       </li>
     </ul>
-    <v-prompt-box ref="promptBox" text="1首歌歌曲已经添加到播放列表"></v-prompt-box>
+    <v-loading v-show="!result.length"></v-loading>
   </v-scroll>
 </template>
 
@@ -27,16 +27,13 @@
   import {createSong} from "../api/song";
   import {Singer} from '../api/singer';
   import Scroll from '../components/Scroll';
+  import Loading from '../components/Loading';
   import {mapMutations, mapActions} from "vuex";
   import VNoResult from "./NoResult";
-  import {playlistMixin} from "../api/mixin";
-  import PromptBox from './PromptBox';
-
 
   const TYPE_SINGER = 'singer';
 
   export default {
-    mixins: [playlistMixin],
     data() {
       return {
         page: 1,
@@ -94,7 +91,6 @@
           this.insertSong(item);
         }
         this.$emit('select', item);
-        this.$refs.promptBox.show(1500);
       },
       searchMore() {
         if (this.hasMore) {
@@ -120,13 +116,9 @@
         search(this.query, this.page, this.perPage).then(res => {
           if (res.code === ERR_OK) {
             this.result = this.result.concat(this._genResult(res.data));
-            this.hasMore = res.data.song.curnum === this.perPage;
+            this.hasMore = res.data.song.totalnum > this.result.length;
           }
         });
-      },
-      handlePlaylist(list) {
-        this.$refs.suggest.$el.style.bottom = list.length ? '60px' : '';
-        this.$refs.suggest.refresh();
       },
       _genResult(data) {
         let ret = [];
@@ -152,7 +144,7 @@
     name: "suggest",
     components: {
       'v-scroll': Scroll,
-      'v-prompt-box': PromptBox
+      'v-loading': Loading
     }
   };
 </script>
@@ -191,6 +183,11 @@
           @include no-wrap();
         }
       }
+    }
+    .loading {
+      position: absolute;
+      top: 500%;
+      width: 100%;
     }
   }
 </style>

@@ -7,6 +7,7 @@ const baseWebpackConfig = require('./webpack.base.conf');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 const portfinder = require('portfinder');
+const vConsolePlugin = require('vconsole-webpack-plugin');
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -47,6 +48,10 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       filename: 'index.html',
       template: 'index.html',
       inject: true
+    }),
+    // 腾讯开发的移动端控制台工具
+    new vConsolePlugin({
+      enable: true
     })
   ]
 });

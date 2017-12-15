@@ -107,7 +107,6 @@
     top: 88px;
     bottom: 0;
     width: 100%;
-    z-index: 100;
   }
 
   .loading {

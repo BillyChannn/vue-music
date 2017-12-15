@@ -5,13 +5,13 @@ import App from './App';
 import router from './router';
 import store from './store';
 import VueLazyLoad from 'vue-lazyload';
-
-import 'style/index.scss';
+/* eslint-disable no-unused-vars */
+import './style/index.scss';
 
 Vue.config.productionTip = false;
 
 Vue.use(VueLazyLoad, {
-  loading: require('images/logo.png')
+  loading: require('./images/logo.png')
 });
 
 /* eslint-disable no-new */

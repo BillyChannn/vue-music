@@ -1,11 +1,11 @@
 <template>
-  <div id="app">
+  <div id="app" @touchstart.once="initialAudio">
     <v-header></v-header>
     <v-nav></v-nav>
     <keep-alive>
       <router-view></router-view>
     </keep-alive>
-    <v-player></v-player>
+    <v-player ref="player"></v-player>
   </div>
 </template>
 
@@ -19,6 +19,12 @@ export default {
     'v-header': Header,
     'v-nav': Nav,
     'v-player': Player
+  },
+  methods: {
+    // 针对ios网页不能autoplay和preLoad做的优化
+    initialAudio() {
+      this.$refs.player.initialAudio();
+    }
   }
 };
 </script>

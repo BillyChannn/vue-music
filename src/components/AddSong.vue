@@ -32,7 +32,7 @@
         <v-suggest ref="suggest"
                    :query="query"
                    :showSinger="showSinger"
-                   @select="selectSuggest"
+                   @select="_selectSuggest"
                    @listScroll="blurInput"></v-suggest>
       </div>
       <v-prompt-box ref="promptBox" text="1首歌歌曲已经添加到播放列表"></v-prompt-box>
@@ -71,6 +71,10 @@
       ])
     },
     methods: {
+      _selectSuggest(item) {
+        this.selectSuggest(item);
+        this.$refs.promptBox.show(1500);
+      },
       selectSong(song, index) {
         index > 0 ? this.insertSong(new Song(song)) : this.setPlayingState(true);
         this.$refs.promptBox.show(1500);
